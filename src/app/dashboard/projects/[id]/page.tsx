@@ -264,24 +264,41 @@ export default function ProjectDetailPage() {
         setClusteringStatus('Preparing to re-process photos...');
 
         try {
+            console.log(`[FaceGallery] Starting Re-sort for project ${projectId}...`);
             await deleteAllProjectClusters(projectId);
             await updateProject(projectId, { status: 'processing', cluster_count: 0 });
             
             const photoFiles: { file: File; dbRecord: Record<string, unknown> }[] = [];
             for (let i = 0; i < photos.length; i++) {
                 const p = photos[i] as any;
-                setProcessProgress({ current: i + 1, total: photos.length, file: `Fetching ${p.original_filename}...` });
+                const statusStr = `Fetching asset ${i+1}/${photos.length}: ${p.original_filename}`;
+                setProcessProgress({ current: i + 1, total: photos.length, file: statusStr });
+                console.log(`[FaceGallery] ${statusStr}`);
                 
-                const res = await fetch(p.publicUrl);
-                const blob = await res.blob();
-                const file = new File([blob], p.original_filename, { type: blob.type });
-                photoFiles.push({ file, dbRecord: p });
+                try {
+                    // Use cache: 'no-cache' and mode: 'cors' to handle potential stale CORS headers
+                    const res = await fetch(p.publicUrl, { cache: 'no-cache', mode: 'cors' });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const blob = await res.blob();
+                    const file = new File([blob], p.original_filename, { type: blob.type });
+                    photoFiles.push({ file, dbRecord: p });
+                } catch (fetchErr) {
+                    console.error(`[FaceGallery] Failed to fetch ${p.original_filename} from storage:`, fetchErr);
+                    // Continue with other photos instead of crashing
+                }
             }
 
-            setClusteringStatus('Analyzing photos...');
+            if (photoFiles.length === 0) {
+                throw new Error("Could not retrieve any photos from storage for re-processing.");
+            }
+
+            setClusteringStatus(`Analyzing ${photoFiles.length} photos...`);
             const results = await processPhotos(
                 photoFiles.map(u => u.file),
-                (current, total, file) => setProcessProgress({ current, total, file })
+                (current, total, file) => {
+                    setProcessProgress({ current, total, file });
+                    console.log(`[FaceGallery] Processing ${file}: ${current}/${total}`);
+                }
             );
 
             for (let i = 0; i < results.length; i++) {
@@ -535,8 +552,14 @@ export default function ProjectDetailPage() {
                             <div className="card">
                                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
                                     <h3 style={{ fontFamily: 'var(--font-heading)', margin: 0 }}>Uploaded Photos ({photos.length})</h3>
-                                    <button className="btn btn-secondary btn-sm" onClick={handleResortPhotos} disabled={processing || uploading}>
-                                        <RefreshCcw size={16} /> Re-sort All Photos
+                                    <button 
+                                        className="btn btn-secondary btn-sm" 
+                                        onClick={handleResortPhotos} 
+                                        disabled={processing || uploading}
+                                        style={{ borderColor: 'var(--color-primary-dark)' }}
+                                    >
+                                        <RefreshCcw size={16} className={processing ? 'spin' : ''} /> 
+                                        {processing ? 'Re-sorting...' : 'Re-sort All Photos'}
                                     </button>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>

@@ -43,6 +43,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     setMounted(true);
+    
     // Custom Cursor Followering
     const moveCursor = (e: MouseEvent) => {
       if (cursorRef.current) {
@@ -146,9 +147,11 @@ export default function LandingPage() {
 
   return (
     <ReactLenis root>
-    <div style={{ background: '#050505', minHeight: '100vh', color: '#f8f8f8', fontFamily: 'var(--font-body)' }}>
+    {/* LOCAL CURSOR NONE ON LANDING PAGE */}
+    <div style={{ background: '#050505', minHeight: '100vh', color: '#f8f8f8', fontFamily: 'var(--font-body)', cursor: 'none' }}>
+      
       {/* CUSTOM CURSOR */}
-      <div ref={cursorRef} className="custom-cursor hidden md:block"></div>
+      <div ref={cursorRef} className="custom-cursor hidden md:block" style={{ top: -100, left: -100, position: 'fixed' }}></div>
 
       {/* FAIL-SAFE NAV */}
       <nav style={{ 
@@ -195,7 +198,12 @@ export default function LandingPage() {
           ))}
 
           <div className="hero-reveal" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-            <div className="badge-luxury mb-12 mx-auto scale-110">
+            <div className="badge-luxury mb-12 mx-auto scale-110" style={{ 
+              display: 'inline-flex', alignItems: 'center', gap: '10px', 
+              background: 'rgba(212, 175, 55, 0.05)', border: '1px solid rgba(212, 175, 55, 0.2)', 
+              borderRadius: '99px', padding: '8px 20px', fontSize: '11px', fontWeight: 900,
+              letterSpacing: '0.2em', color: '#f2ca50', textTransform: 'uppercase'
+            }}>
               <span className="animate-pulse w-2 h-2 rounded-full bg-primary shadow-[0_0_12px_var(--color-primary)]"></span>
               Neural Processing Orchestration V3.4
             </div>
@@ -259,7 +267,7 @@ export default function LandingPage() {
         <section id="features" style={{ padding: '160px 40px', background: '#080808', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '100px' }}>
-              <div className="section-label">SYSTEM CORE</div>
+              <div className="section-label" style={{ color: '#d4af37', fontWeight: 900, letterSpacing: '0.5em', fontSize: '10px' }}>SYSTEM CORE</div>
               <h2 className="animated-gilded-text" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 950, marginTop: '20px', fontFamily: 'var(--font-heading)' }}>Neural Systems</h2>
             </div>
             
