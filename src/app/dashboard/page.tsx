@@ -21,10 +21,10 @@ function ProgressRing({ percentage, label, value, color, icon }: { percentage: n
     const strokeDashoffset = circumference - (progress / 100) * circumference;
 
     return (
-        <div className="stat-card" style={{ display: 'flex', alignItems: 'center', gap: 20, padding: 20 }}>
+        <div className="stat-card card-glass" style={{ display: 'flex', alignItems: 'center', gap: 20, padding: 24, border: '1px solid var(--glass-border)' }}>
             <div style={{ position: 'relative', width: 80, height: 80 }}>
                 <svg width="80" height="80" style={{ transform: 'rotate(-90deg)' }}>
-                    <circle cx="40" cy="40" r={radius} stroke="var(--bg-document)" strokeWidth="6" fill="transparent" />
+                    <circle cx="40" cy="40" r={radius} stroke="rgba(255,255,255,0.05)" strokeWidth="6" fill="transparent" />
                     <circle 
                         cx="40" cy="40" r={radius} 
                         stroke={color} 
@@ -32,17 +32,17 @@ function ProgressRing({ percentage, label, value, color, icon }: { percentage: n
                         fill="transparent" 
                         strokeDasharray={circumference} 
                         strokeDashoffset={strokeDashoffset} 
-                        style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+                        style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
                         strokeLinecap="round"
                     />
                 </svg>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color }}>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color, filter: 'drop-shadow(0 0 8px ' + color + '44)' }}>
                     {icon}
                 </div>
             </div>
             <div>
-                <div className="stat-value">{value}</div>
-                <div className="stat-label">{label}</div>
+                <div className="stat-value" style={{ fontSize: '1.75rem', letterSpacing: '-0.02em' }}>{value}</div>
+                <div className="stat-label" style={{ color: 'var(--text-secondary)', textTransform: 'uppercase', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.05em' }}>{label}</div>
             </div>
         </div>
     );
@@ -138,11 +138,11 @@ export default function DashboardOverview() {
             )}
 
             {showWarmupToast && (
-                <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 100, background: 'var(--bg-card)', border: '1px solid var(--color-warning)', padding: '12px 20px', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: 12, animation: 'fadeIn 0.3s ease' }}>
-                    <Loader2 size={18} className="animate-spin" style={{ color: 'var(--color-warning)' }} />
+                <div className="card-glass" style={{ position: 'fixed', bottom: 32, right: 32, zIndex: 100, border: '1px solid var(--color-warning)', padding: '16px 24px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: 14, animation: 'fadeIn 0.5s ease' }}>
+                    <Loader2 size={20} className="animate-spin" style={{ color: 'var(--color-warning)' }} />
                     <div style={{ fontSize: '0.85rem' }}>
-                        <div style={{ fontWeight: 600 }}>Warming up AI engine...</div>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>This may take 30s on first load.</div>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>AI Engine Warming Up</div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>HF Spaces cold-start (30-40s)</div>
                     </div>
                 </div>
             )}
@@ -159,11 +159,11 @@ export default function DashboardOverview() {
             
             <div className="page-body">
                 {/* Stats Rings */}
-                <div className="grid grid-4" style={{ marginBottom: 32 }}>
-                    <ProgressRing percentage={100} label="Total Projects" value={String(projects.length)} color="var(--color-primary-light)" icon={<FolderOpen size={24} />} />
-                    <ProgressRing percentage={totalPhotos > 0 ? 100 : 0} label="Photos Uploaded" value={formatNumber(totalPhotos)} color="var(--color-accent)" icon={<Image size={24} />} />
-                    <ProgressRing percentage={totalClusters > 0 ? 100 : 0} label="Face Clusters" value={formatNumber(totalClusters)} color="var(--color-success)" icon={<Users size={24} />} />
-                    <ProgressRing percentage={projects.length ? (readyProjects / projects.length) * 100 : 0} label="Ready Projects" value={String(readyProjects)} color="var(--color-warning)" icon={<Link2 size={24} />} />
+                <div className="grid grid-4" style={{ marginBottom: 40 }}>
+                    <ProgressRing percentage={100} label="Projects" value={String(projects.length)} color="var(--color-primary)" icon={<FolderOpen size={24} />} />
+                    <ProgressRing percentage={totalPhotos > 0 ? 100 : 0} label="Processed" value={formatNumber(totalPhotos)} color="var(--color-accent)" icon={<Image size={24} />} />
+                    <ProgressRing percentage={totalClusters > 0 ? 100 : 0} label="Clusters" value={formatNumber(totalClusters)} color="var(--color-success)" icon={<Users size={24} />} />
+                    <ProgressRing percentage={projects.length ? (readyProjects / projects.length) * 100 : 0} label="Ready" value={String(readyProjects)} color="var(--color-warning)" icon={<Link2 size={24} />} />
                 </div>
 
                 <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
@@ -184,54 +184,60 @@ export default function DashboardOverview() {
                                 </Link>
                             </div>
                         ) : (
-                            <div className="card">
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem' }}>Recent Projects</h3>
-                                    <Link href="/dashboard/projects" className="btn btn-ghost btn-sm">View All →</Link>
+                            <div className="card-glass" style={{ padding: 28 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 600 }}>Recent Projects</h3>
+                                    <Link href="/dashboard/projects" className="btn btn-ghost btn-sm" style={{ fontWeight: 500 }}>View All →</Link>
                                 </div>
-                                {projects.slice(0, 5).map((project) => (
-                                    <Link
-                                        key={project.id as string}
-                                        href={`/dashboard/projects/${project.id}`}
-                                        style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 0', borderBottom: '1px solid var(--border-color)', textDecoration: 'none' }}
-                                    >
-                                        <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-sm)', background: 'var(--bg-surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                            <FolderOpen size={18} style={{ color: 'var(--text-muted)' }} />
-                                        </div>
-                                        <div style={{ flex: 1, minWidth: 0 }}>
-                                            <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{project.name as string}</div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                                {(project.photo_count as number) || 0} photos · {(project.cluster_count as number) || 0} clusters
-                                                {project.event_date ? ` · ${formatDate(String(project.event_date))}` : ''}
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    {projects.slice(0, 5).map((project) => (
+                                        <Link
+                                            key={project.id as string}
+                                            href={`/dashboard/projects/${project.id}`}
+                                            style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 0', borderBottom: '1px solid var(--border-color)', textDecoration: 'none', transition: 'padding 0.2s' }}
+                                            className="hover-reveal"
+                                        >
+                                            <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                <FolderOpen size={20} style={{ color: 'var(--color-primary)' }} />
                                             </div>
-                                        </div>
-                                        <span className={statusBadge(project.status as string)}>{project.status as string}</span>
-                                    </Link>
-                                ))}
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>{project.name as string}</div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2 }}>
+                                                    {(project.photo_count as number) || 0} photos · {(project.cluster_count as number) || 0} clusters
+                                                    {project.event_date ? ` · ${formatDate(String(project.event_date))}` : ''}
+                                                </div>
+                                            </div>
+                                            <span className={statusBadge(project.status as string)}>{project.status as string}</span>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
                     
                     {/* Real-time Activity Feed Panel */}
                     <div style={{ flex: '1 1 300px' }}>
-                        <div className="card" style={{ height: '100%', background: 'var(--bg-surface)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
-                                <Bell size={18} style={{ color: 'var(--color-primary)' }} />
-                                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', margin: 0 }}>Activity Feed</h3>
-                                <div style={{ width: 8, height: 8, background: 'var(--color-success)', borderRadius: '50%', marginLeft: 'auto', display: 'flex' }} className="animate-pulse" />
+                        <div className="card-glass" style={{ height: '100%', padding: 28 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Bell size={18} style={{ color: 'var(--color-primary)' }} />
+                                </div>
+                                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 600, margin: 0 }}>Activity</h3>
+                                <div style={{ width: 8, height: 8, background: 'var(--color-success)', borderRadius: '50%', marginLeft: 'auto', boxShadow: '0 0 10px var(--color-success)' }} className="animate-pulse" />
                             </div>
                             
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                                 {[
-                                    { msg: "Client downloaded ZIP from Smith Wedding", time: "2m ago", icon: <CheckCircle2 size={14} color="var(--color-success)" /> },
-                                    { msg: "New link generated for Person #4", time: "15m ago", icon: <Link2 size={14} color="var(--color-primary-light)" /> },
-                                    { msg: "Processed 500 photos in Corporate Event", time: "1h ago", icon: <Users size={14} color="var(--color-accent)" /> },
-                                    { msg: "Project 'Graduation 2026' created", time: "3h ago", icon: <FolderOpen size={14} color="var(--text-muted)" /> },
+                                    { msg: "Client downloaded ZIP from Smith Wedding", time: "2m ago", icon: <CheckCircle2 size={16} color="var(--color-success)" /> },
+                                    { msg: "New link generated for Person #4", time: "15m ago", icon: <Link2 size={16} color="var(--color-primary)" /> },
+                                    { msg: "Processed 500 photos in Corporate Event", time: "1h ago", icon: <Users size={16} color="var(--color-accent)" /> },
+                                    { msg: "Project 'Graduation 2026' created", time: "3h ago", icon: <FolderOpen size={16} color="var(--text-muted)" /> },
                                 ].map((activity, i) => (
-                                    <div key={i} style={{ display: 'flex', gap: 12, fontSize: '0.85rem' }}>
-                                        <div style={{ marginTop: 2 }}>{activity.icon}</div>
+                                    <div key={i} style={{ display: 'flex', gap: 16, fontSize: '0.875rem', position: 'relative' }}>
+                                        {i < 3 && <div style={{ position: 'absolute', left: 8, top: 24, bottom: -16, width: 1, background: 'var(--border-color)' }} />}
+                                        <div style={{ marginTop: 2, background: 'var(--bg-dark)', borderRadius: '50%', zIndex: 1 }}>{activity.icon}</div>
                                         <div>
-                                            <div style={{ color: 'var(--text-primary)', marginBottom: 2 }}>{activity.msg}</div>
+                                            <div style={{ color: 'var(--text-primary)', fontWeight: 500, marginBottom: 4 }}>{activity.msg}</div>
                                             <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{activity.time}</div>
                                         </div>
                                     </div>
