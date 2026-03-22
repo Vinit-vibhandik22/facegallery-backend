@@ -120,12 +120,61 @@ async def analyze_photo(file: UploadFile = File(...)):
         traceback.print_exc()
         return {"width": 0, "height": 0, "faces": []}
 
+def refine_labels_by_centroids(embeddings: np.ndarray, labels: List[int], threshold: float = 0.35):
+    """
+    Post-process labels by merging clusters whose centroids are within threshold.
+    Uses Cosine distance to identify similar centroids.
+    """
+    labels_np = np.array(labels)
+    unique_labels = [l for l in np.unique(labels_np) if l >= 0]
+    
+    if len(unique_labels) <= 1:
+        return labels, len(unique_labels)
+        
+    # Calculate centroids
+    centroids = []
+    for l in unique_labels:
+        mask = labels_np == l
+        cluster_embeddings = embeddings[mask]
+        centroid = np.mean(cluster_embeddings, axis=0)
+        # Re-normalize centroid to unit length for cosine distance
+        norm = np.linalg.norm(centroid)
+        if norm > 0:
+            centroid = centroid / norm
+        centroids.append(centroid)
+        
+    centroids_np = np.array(centroids)
+    
+    # Second pass: Cluster the centroids themselves
+    # If two centroids are close, we merge their entire clusters.
+    refine_clustering = AgglomerativeClustering(
+        n_clusters=None,
+        metric='cosine',
+        linkage='average',
+        distance_threshold=threshold
+    )
+    
+    centroid_labels = refine_clustering.fit_predict(centroids_np)
+    
+    # Map old labels to refined labels
+    old_to_refined = {old: new for old, new in zip(unique_labels, centroid_labels)}
+    
+    refined_labels_raw = [old_to_refined[l] if l >= 0 else -1 for l in labels]
+    
+    # Re-sequentialize final labels (0, 1, 2...)
+    final_unique = sorted([l for l in set(refined_labels_raw) if l >= 0])
+    final_map = {old: i for i, old in enumerate(final_unique)}
+    final_labels = [final_map[l] if l >= 0 else -1 for l in refined_labels_raw]
+    
+    return final_labels, len(final_unique)
+
 @app.post("/cluster-faces")
 async def cluster_faces(
     embeddings: List[List[float]], 
     epsilon: float = Query(0.35), 
     min_points: int = Query(1), 
-    linkage: str = Query("average")
+    linkage: str = Query("average"),
+    refine: bool = Query(True)
 ):
     """
     Perform Agglomerative Clustering on face embeddings.
@@ -168,12 +217,22 @@ async def cluster_faces(
             else:
                 labels.append(-1)
                 noise_indices.append(i)
-                
-        print(f"[FaceGallery Backend] Clustering: {len(embeddings)} faces -> {next_id} clusters ({len(noise_indices)} noise)")
+        
+        # --- PHASE 2: REFINEMENT ENGINE ---
+        final_labels = labels
+        final_cluster_count = next_id
+        
+        if refine and next_id > 1:
+            print(f"[FaceGallery Backend] Running centroid-based refinement pass...")
+            # Use same epsilon or dedicated refine_epsilon if provided
+            final_labels, final_cluster_count = refine_labels_by_centroids(
+                X, labels, threshold=epsilon
+            )
+            print(f"[FaceGallery Backend] Refinement: {next_id} -> {final_cluster_count} clusters")
 
         return {
-            "labels": labels,
-            "clusterCount": next_id,
+            "labels": final_labels,
+            "clusterCount": final_cluster_count,
             "noiseIndices": noise_indices
         }
     except Exception as e:
