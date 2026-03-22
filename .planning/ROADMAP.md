@@ -6,7 +6,7 @@ This roadmap covers the transition from a rigid "complete linkage" clustering sy
 ## Phases
 - [x] **Phase 1: Clustering Core** - Transition to average linkage and cosine distance in the backend. (completed 2026-03-22)
 - [x] **Phase 2: Refinement Engine** - Implement the centroid-based post-processor merge. (completed 2026-03-22)
-- [ ] **Phase 3: Validation & Polish** - Prove accuracy improvements and verify in the dashboard.
+- [x] **Phase 3: Validation & Polish** - Prove accuracy improvements and verify in the dashboard. (completed 2026-03-22)
 
 ## Phase Details
 
@@ -53,7 +53,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Clustering Core | 0/1 | Complete    | 2026-03-22 |
 | 2. Refinement Engine | 0/1 | Complete    | 2026-03-22 |
-| 3. Validation & Polish | 0/1 | Not started | - |
+| 3. Validation & Polish | 0/1 | Complete    | 2026-03-22 |
 
 ---
 *Roadmap defined: 2026-03-22*
