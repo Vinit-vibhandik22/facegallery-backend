@@ -22,7 +22,7 @@
 
 <br/>
 
-> **Upload thousands of event photos. Clustr finds every face, groups them by person, and delivers individual galleries — automatically. Zero false positives.**
+> **Upload thousands of event photos. Clustr finds every face then groups them by person, and delivers individual galleries — automatically. Zero false positives.**
 
 <br/>
 
