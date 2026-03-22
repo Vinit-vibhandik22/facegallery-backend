@@ -3,9 +3,11 @@ import io
 import base64
 import cv2
 import numpy as np
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from typing import List, Optional
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from deepface import DeepFace
+from sklearn.cluster import AgglomerativeClustering
 
 # Suppress TF logs
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3" 
@@ -117,6 +119,68 @@ async def analyze_photo(file: UploadFile = File(...)):
         import traceback
         traceback.print_exc()
         return {"width": 0, "height": 0, "faces": []}
+
+@app.post("/cluster-faces")
+async def cluster_faces(
+    embeddings: List[List[float]], 
+    epsilon: float = Query(0.35), 
+    min_points: int = Query(1), 
+    linkage: str = Query("average")
+):
+    """
+    Perform Agglomerative Clustering on face embeddings.
+    Default: Average Linkage + Cosine Distance (0.35 threshold).
+    """
+    try:
+        if not embeddings:
+            return {"labels": [], "cluster_count": 0, "noise_indices": []}
+
+        X = np.array(embeddings)
+        
+        # Agglomerative clustering with cosine distance and average linkage
+        # distance_threshold is epsilon in scikit-learn when n_clusters=None
+        clustering = AgglomerativeClustering(
+            n_clusters=None,
+            metric='cosine',
+            linkage=linkage,
+            distance_threshold=epsilon
+        )
+        
+        raw_labels = clustering.fit_predict(X)
+        
+        # Post-process for min_points (noise handling)
+        unique, counts = np.unique(raw_labels, return_counts=True)
+        counts_dict = dict(zip(unique, counts))
+        
+        labels = []
+        noise_indices = []
+        
+        # Map raw labels to sequential cluster IDs, filtering for noise
+        label_map = {}
+        next_id = 0
+        
+        for i, raw_label in enumerate(raw_labels):
+            if counts_dict[raw_label] >= min_points:
+                if raw_label not in label_map:
+                    label_map[raw_label] = next_id
+                    next_id += 1
+                labels.append(label_map[raw_label])
+            else:
+                labels.append(-1)
+                noise_indices.append(i)
+                
+        print(f"[FaceGallery Backend] Clustering: {len(embeddings)} faces -> {next_id} clusters ({len(noise_indices)} noise)")
+
+        return {
+            "labels": labels,
+            "clusterCount": next_id,
+            "noiseIndices": noise_indices
+        }
+    except Exception as e:
+        print(f"[FaceGallery Backend] Clustering error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
