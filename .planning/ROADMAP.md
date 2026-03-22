@@ -4,7 +4,7 @@
 This roadmap covers the transition from a rigid "complete linkage" clustering system to a more adaptive "average linkage" model with a post-processing merge step. The goal is to eliminate fragmented identity clusters while maintaining distinct boundaries between different individuals.
 
 ## Phases
-- [ ] **Phase 1: Clustering Core** - Transition to average linkage and cosine distance in the backend.
+- [x] **Phase 1: Clustering Core** - Transition to average linkage and cosine distance in the backend. (completed 2026-03-22)
 - [ ] **Phase 2: Refinement Engine** - Implement the centroid-based post-processor merge.
 - [ ] **Phase 3: Validation & Polish** - Prove accuracy improvements and verify in the dashboard.
 
@@ -51,7 +51,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Clustering Core | 0/1 | Not started | - |
+| 1. Clustering Core | 0/1 | Complete    | 2026-03-22 |
 | 2. Refinement Engine | 0/1 | Not started | - |
 | 3. Validation & Polish | 0/1 | Not started | - |
 
