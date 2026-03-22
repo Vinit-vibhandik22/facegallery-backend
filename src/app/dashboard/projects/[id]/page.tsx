@@ -6,7 +6,7 @@ import { Image, Users, Link2, Upload, CheckCircle2, BarChart3, Loader2, Sparkles
 import FaceNexusGraph from '@/components/FaceNexusGraph';
 import { getProject, getPhotos, getClusters, getGalleryLinks, uploadPhoto, updateProject, createCluster, createPhotoClusterMapping, createGalleryLink, updateCluster, updatePhotoFaceCount, deleteAllProjectClusters, mergeClusters } from '@/lib/db';
 import { processPhotos, type PhotoProcessingResult } from '@/lib/face-processing';
-import { dbscan, computeConfidences } from '@/lib/clustering';
+import { dbscan, computeConfidences, clusterFacesRemote } from '@/lib/clustering';
 import { formatDate } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
@@ -202,10 +202,10 @@ export default function ProjectDetailPage() {
             }
         }
 
-        // Extremely tight industrial-level L2 Euclidean threshold set to 0.85
-        const { labels, clusterCount } = dbscan(embeddings, 0.85, 1);
-        const confidences = computeConfidences(embeddings, labels, clusterCount, 0.85);
-        console.log(`[FaceGallery] Clustering: ${clusterCount} clusters, labels:`, labels);
+        // High-accuracy Backend Clustering: Average Linkage + Cosine distance (0.35 threshold)
+        const { labels, clusterCount } = await clusterFacesRemote(embeddings, 0.35, 1);
+        const confidences = computeConfidences(embeddings, labels, clusterCount, 0.35);
+        console.log(`[FaceGallery] Remote Clustering: ${clusterCount} clusters, labels:`, labels);
 
         setClusteringStatus(`Found ${clusterCount} face groups. Saving...`);
 
@@ -334,9 +334,9 @@ export default function ProjectDetailPage() {
 
             const embeddings = allEmbeddings.map(e => e.embedding);
 
-            console.log(`[FaceGallery] Computing L2 Euclidean distances between ${embeddings.length} faces...`);
-            const { labels, clusterCount } = dbscan(embeddings, 0.85, 1);
-            const confidences = computeConfidences(embeddings, labels, clusterCount, 0.85);
+            console.log(`[FaceGallery] Clustering faces via Backend...`);
+            const { labels, clusterCount } = await clusterFacesRemote(embeddings, 0.35, 1);
+            const confidences = computeConfidences(embeddings, labels, clusterCount, 0.35);
 
             setClusteringStatus(`Found ${clusterCount} face groups. Saving...`);
 
