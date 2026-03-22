@@ -15,6 +15,33 @@ export interface ClusterResult {
 }
 
 /**
+ * Run clustering on the Python backend (Agglomerative + Average Linkage).
+ */
+export async function clusterFacesRemote(
+    embeddings: number[][],
+    epsilon: number = 0.35,
+    minPoints: number = 1
+): Promise<ClusterResult> {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8000';
+    const res = await fetch(`${backendUrl}/cluster-faces?epsilon=${epsilon}&min_points=${minPoints}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(embeddings),
+    });
+
+    if (!res.ok) {
+        throw new Error(`Remote clustering failed: ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return {
+        labels: data.labels,
+        clusterCount: data.clusterCount,
+        noiseIndices: data.noiseIndices
+    };
+}
+
+/**
  * Compute Normalized Euclidean (L2) distance between two vectors.
  * Facenet512 responds much more consistently and predictably to L2 distance.
  * Official threshold for Facenet512 L2 distance is 1.04.
