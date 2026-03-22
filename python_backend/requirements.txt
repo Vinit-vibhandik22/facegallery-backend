@@ -5,3 +5,5 @@ deepface
 opencv-python-headless
 tf-keras
 numpy
+scikit-learn
+pandas
