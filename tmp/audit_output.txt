@@ -1,0 +1,4 @@
+﻿Testing combined clustering for 15 embeddings (P1: 9 vectors, P2: 6 vectors)...
+Labels: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
+Cluster Count: 2
+ERROR: 'charmap' codec can't encode character '\u2713' in position 31: character maps to <undefined>

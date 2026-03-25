@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Download, X, ChevronLeft, ChevronRight, Calendar, Image, Loader2, AlertCircle, Check } from 'lucide-react';
+import { Download, X, ChevronLeft, ChevronRight, Calendar, Image, AlertCircle, Check } from 'lucide-react';
+import NeuralNodeLoader from '@/components/ui/NeuralNodeLoader';
 import { getGalleryByToken } from '@/lib/db';
 import { supabase } from '@/lib/supabase';
 
@@ -117,8 +118,8 @@ export default function GalleryPage() {
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-dark)' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary)' }} />
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-obsidian)' }}>
+                <NeuralNodeLoader size={64} />
             </div>
         );
     }
@@ -175,7 +176,7 @@ export default function GalleryPage() {
                     >
                         {downloadingAll ? (
                             <>
-                                <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                                <NeuralNodeLoader size={18} />
                                 Downloading {downloadAllProgress.current}/{downloadAllProgress.total}...
                             </>
                         ) : (
@@ -225,7 +226,7 @@ export default function GalleryPage() {
             <footer style={{ textAlign: 'center', padding: '32px 20px', borderTop: '1px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                 {cluster.label ? <p>Gallery for <strong>{String(cluster.label)}</strong> · {String(project.name)}</p> : null}
                 {studio.show_powered_by ? (
-                    <p style={{ marginTop: 6, fontSize: '0.75rem' }}>Powered by <span style={{ color: 'var(--color-primary-light)', fontWeight: 600 }}>FaceGallery</span></p>
+                    <p style={{ marginTop: 6, fontSize: '0.75rem' }}>Powered by <span style={{ color: 'var(--color-primary-light)', fontWeight: 600 }}>ClustR AI</span></p>
                 ) : null}
             </footer>
 

@@ -1,8 +1,10 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import gsap from 'gsap';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FolderOpen, Image, Users, Link2, ArrowRight, Loader2, UploadCloud, Bell, CheckCircle2 } from 'lucide-react';
+import { FolderOpen, Image, Users, Link2, ArrowRight, UploadCloud, Bell, CheckCircle2 } from 'lucide-react';
+import NeuralNodeLoader from '@/components/ui/NeuralNodeLoader';
 import { useAuth } from '@/lib/auth-context';
 import { getProjects } from '@/lib/db';
 import { formatDate, formatNumber } from '@/lib/utils';
@@ -63,11 +65,7 @@ export default function DashboardOverview() {
             .catch(console.error)
             .finally(() => setLoading(false));
 
-        // Ping backend to wake it up (HF Spaces Cold Start handling)
         const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8000';
-        const startPing = Date.now();
-        
-        // Show warmup toast after 1.5s if backend hasn't responded
         const toastTimer = setTimeout(() => {
             if (backendStatus === 'loading') setShowWarmupToast(true);
         }, 1500);
@@ -81,13 +79,25 @@ export default function DashboardOverview() {
                     setBackendStatus('error');
                 }
             })
-            .catch(() => {
-                setBackendStatus('error');
-            })
-            .finally(() => {
-                clearTimeout(toastTimer);
-            });
+            .catch(() => setBackendStatus('error'))
+            .finally(() => clearTimeout(toastTimer));
     }, []);
+
+    // GSAP Stagger Entrance
+    useLayoutEffect(() => {
+        if (!loading && projects.length > 0) {
+            gsap.fromTo(".project-list-item", 
+                { opacity: 0, y: 30, filter: 'blur(10px)' }, 
+                { 
+                    opacity: 1, y: 0, filter: 'blur(0px)',
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: "power3.out",
+                    delay: 0.2
+                }
+            );
+        }
+    }, [loading, projects.length]);
 
     const totalPhotos = projects.reduce((sum, p) => sum + ((p.photo_count as number) || 0), 0);
     const totalClusters = projects.reduce((sum, p) => sum + ((p.cluster_count as number) || 0), 0);
@@ -139,7 +149,7 @@ export default function DashboardOverview() {
 
             {showWarmupToast && (
                 <div className="card-glass" style={{ position: 'fixed', bottom: 32, right: 32, zIndex: 100, border: '1px solid var(--color-warning)', padding: '16px 24px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: 14, animation: 'fadeIn 0.5s ease' }}>
-                    <Loader2 size={20} className="animate-spin" style={{ color: 'var(--color-warning)' }} />
+                    <NeuralNodeLoader size={20} color="var(--color-warning)" />
                     <div style={{ fontSize: '0.85rem' }}>
                         <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>AI Engine Warming Up</div>
                         <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>HF Spaces cold-start (30-40s)</div>
@@ -170,7 +180,7 @@ export default function DashboardOverview() {
                     <div style={{ flex: '2 1 500px' }}>
                         {loading ? (
                             <div style={{ textAlign: 'center', padding: 60 }}>
-                                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary)' }} />
+                                <NeuralNodeLoader size={48} />
                             </div>
                         ) : projects.length === 0 ? (
                             <div className="card" style={{ textAlign: 'center', padding: '60px 20px', border: '2px dashed var(--border-color)', background: 'transparent' }}>
@@ -194,8 +204,8 @@ export default function DashboardOverview() {
                                         <Link
                                             key={project.id as string}
                                             href={`/dashboard/projects/${project.id}`}
-                                            style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 0', borderBottom: '1px solid var(--border-color)', textDecoration: 'none', transition: 'padding 0.2s' }}
-                                            className="hover-reveal"
+                                            style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 0', borderBottom: '1px solid var(--border-color)', textDecoration: 'none', transition: 'padding 0.2s', opacity: 0 }}
+                                            className="hover-reveal project-list-item"
                                         >
                                             <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                                 <FolderOpen size={20} style={{ color: 'var(--color-primary)' }} />

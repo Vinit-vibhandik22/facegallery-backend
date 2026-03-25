@@ -3,7 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
-  title: "FaceGallery — AI-Powered Photo Delivery for Studios",
+  title: "ClustR AI — AI-Powered Photo Delivery for Studios",
   description: "White-label face-bucketed photo delivery platform. Upload thousands of photos, automatically sort by faces, and deliver personalized galleries to your clients.",
 };
 

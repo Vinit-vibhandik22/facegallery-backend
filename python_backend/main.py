@@ -23,7 +23,7 @@ app.add_middleware(
 )
 @app.get("/")
 async def root():
-    return {"status": "ok", "service": "FaceGallery AI Engine"}
+    return {"status": "ok", "service": "ClustR AI Engine"}
 
 @app.get("/health")
 async def health():
@@ -82,7 +82,7 @@ async def analyze_photo(file: UploadFile = File(...)):
             # DeepFace throws ValueError if enforce_detection=True and no faces found
             # Sometimes exceptions contain emojis (e.g. gdown errors) which crash Windows console `print`
             err_str = str(e).encode('ascii', 'ignore').decode('ascii')
-            print(f"[FaceGallery Backend] No faces found in {file.filename} (or detection error): {err_str}")
+            print(f"[ClustR AI Backend] No faces found in {file.filename} (or detection error): {err_str}")
             faces_data = []
         
         detected_faces = []
@@ -107,7 +107,7 @@ async def analyze_photo(file: UploadFile = File(...)):
                 "thumbnailDataUrl": thumb
             })
 
-        print(f"[FaceGallery Backend] Processed {file.filename}: found {len(detected_faces)} faces")
+        print(f"[ClustR AI Backend] Processed {file.filename}: found {len(detected_faces)} faces")
 
         return {
             "width": w,
@@ -115,7 +115,7 @@ async def analyze_photo(file: UploadFile = File(...)):
             "faces": detected_faces
         }
     except Exception as e:
-        print(f"[FaceGallery Backend] Error processing {file.filename}: {str(e)}")
+        print(f"[ClustR AI Backend] Error processing {file.filename}: {str(e)}")
         import traceback
         traceback.print_exc()
         return {"width": 0, "height": 0, "faces": []}
@@ -223,12 +223,12 @@ async def cluster_faces(
         final_cluster_count = next_id
         
         if refine and next_id > 1:
-            print(f"[FaceGallery Backend] Running centroid-based refinement pass...")
+            print(f"[ClustR AI Backend] Running centroid-based refinement pass...")
             # Use same epsilon or dedicated refine_epsilon if provided
             final_labels, final_cluster_count = refine_labels_by_centroids(
                 X, labels, threshold=epsilon
             )
-            print(f"[FaceGallery Backend] Refinement: {next_id} -> {final_cluster_count} clusters")
+            print(f"[ClustR AI Backend] Refinement: {next_id} -> {final_cluster_count} clusters")
 
         return {
             "labels": final_labels,
@@ -236,12 +236,12 @@ async def cluster_faces(
             "noiseIndices": noise_indices
         }
     except Exception as e:
-        print(f"[FaceGallery Backend] Clustering error: {str(e)}")
+        print(f"[ClustR AI Backend] Clustering error: {str(e)}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
-    print("Starting FaceGallery Python Backend on port 8000...")
+    print("Starting ClustR AI Python Backend on port 8000...")
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

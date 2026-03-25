@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { Camera, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Camera, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import NeuralNodeLoader from '@/components/ui/NeuralNodeLoader';
 import Link from 'next/link';
 
 export default function AuthPage() {
@@ -44,7 +45,7 @@ export default function AuthPage() {
                 {/* Logo */}
                 <div style={{ textAlign: 'center', marginBottom: 40 }}>
                     <Link href="/" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 700, background: 'linear-gradient(135deg, var(--color-primary-light), var(--color-accent))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        ⬡ FaceGallery
+                        ⬡ ClustR AI
                     </Link>
                     <p style={{ color: 'var(--text-secondary)', marginTop: 8, fontSize: '0.9rem' }}>
                         {mode === 'login' ? 'Welcome back to your studio' : 'Create your studio account'}
@@ -106,7 +107,7 @@ export default function AuthPage() {
                         )}
 
                         <button className="btn btn-primary btn-lg" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 24 }}>
-                            {loading ? <Loader2 size={18} className="spin" /> : <ArrowRight size={18} />}
+                            {loading ? <NeuralNodeLoader size={20} color="#fff" /> : <ArrowRight size={18} />}
                             {mode === 'login' ? 'Log In' : 'Create Account'}
                         </button>
                     </form>

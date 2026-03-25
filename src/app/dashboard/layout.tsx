@@ -2,7 +2,8 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { LayoutDashboard, FolderOpen, Settings, BarChart3, Zap, LogOut, Loader2, Bell, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, FolderOpen, Settings, BarChart3, Zap, LogOut, Bell, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
+import NeuralNodeLoader from '@/components/ui/NeuralNodeLoader';
 import { useEffect, useState } from 'react';
 
 const navItems = [
@@ -43,8 +44,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-dark)' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary)' }} />
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-obsidian)' }}>
+                <NeuralNodeLoader size={48} />
             </div>
         );
     }
@@ -58,13 +59,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const initials = studio?.name
         ? studio.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
-        : 'FG';
+        : 'CR';
 
     return (
         <div className="dashboard-layout" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-document)' }}>
             <aside className="sidebar" style={{ width: isCollapsed ? 80 : 250, transition: 'width 0.3s ease', display: 'flex', flexDirection: 'column', flexShrink: 0, overflow: 'hidden' }}>
                 <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'space-between', borderBottom: '1px solid var(--border-color)' }}>
-                    {!isCollapsed && <div className="sidebar-logo" style={{ margin: 0 }}>⬡ FaceGallery</div>}
+                    {!isCollapsed && <div className="sidebar-logo" style={{ margin: 0 }}>⬡ ClustR AI</div>}
                     {isCollapsed && <div className="sidebar-logo" style={{ margin: 0, fontSize: '1.5rem' }}>⬡</div>}
                     <button onClick={() => setIsCollapsed(!isCollapsed)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}>
                         {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}

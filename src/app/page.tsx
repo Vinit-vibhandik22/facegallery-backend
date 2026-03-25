@@ -6,6 +6,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ReactLenis } from 'lenis/react';
 import StickyScroll from '@/components/ui/sticky-scroll';
+import NeuralConstellation from '@/components/ui/NeuralConstellation';
+import DualEventCarousel from '@/components/ui/DualEventCarousel';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -162,7 +164,7 @@ export default function LandingPage() {
         borderBottom: '1px solid rgba(212, 175, 55, 0.15)' 
       }}>
         <div className="logo animated-gilded-text font-black" style={{ fontSize: '1.8rem', letterSpacing: '-0.02em', fontFamily: 'var(--font-heading)' }}>
-          CLUSTR<span style={{ opacity: 0.4, color: '#fff' }}>AI</span>
+          ClustR<span style={{ opacity: 0.4, color: '#fff' }}>AI</span>
         </div>
         <div style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
           {['Tech', 'Matrix', 'Catalog', 'Investment'].map((item, i) => (
@@ -185,17 +187,11 @@ export default function LandingPage() {
         {/* HERO SECTION */}
         <section style={{ 
           padding: '240px 20px 140px', textAlign: 'center', position: 'relative', 
-          background: 'radial-gradient(circle at 50% -20%, rgba(212, 175, 55, 0.15) 0%, transparent 70%)',
-          minHeight: '90vh', display: 'flex', alignItems: 'center'
+          background: 'var(--bg-obsidian)',
+          minHeight: '90vh', display: 'flex', alignItems: 'center', overflow: 'hidden'
         }}>
-          {/* Drifting Background Nodes */}
-          {[1,2,3,4,5,6].map(i => (
-             <div key={i} className="floating-asset" style={{ 
-                position: 'absolute', top: `${Math.random()*80}%`, left: `${Math.random()*80}%`,
-                width: '100px', height: '100px', border: '1px solid rgba(212, 175, 55, 0.05)',
-                borderRadius: '8px', opacity: 0.2, zIndex: 1
-             }}></div>
-          ))}
+          {/* Neural Constellation Constellation (Innovative Parallax Backdrop) */}
+          <NeuralConstellation />
 
           <div className="hero-reveal" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
             <div className="badge-luxury mb-12 mx-auto scale-110" style={{ 
@@ -239,8 +235,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* INTEGRATED STICKY MATRIX (FACE FOCUSED) */}
-        <StickyScroll />
+        {/* Dual Horizontal Auto-Sliding Carousel (Scroll-Triggered) */}
+        <DualEventCarousel />
 
         {/* INTERACTIVE STATS */}
         <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '160px 40px', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
@@ -297,13 +293,13 @@ export default function LandingPage() {
         {/* FAIL-SAFE FOOTER */}
         <footer style={{ padding: '140px 5vw', borderTop: '1px solid rgba(255,255,255,0.05)', background: '#050505', position: 'relative' }}>
           <div style={{ maxWidth: '1440px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '80px' }}>
-            <div className="logo animated-gilded-text font-black" style={{ fontSize: '2rem', fontWeight: 950, letterSpacing: '-0.02em', fontFamily: 'var(--font-heading)' }}>CLUSTR<span style={{ opacity: 0.4, color: '#fff' }}>AI</span></div>
+            <div className="logo animated-gilded-text font-black" style={{ fontSize: '2rem', fontWeight: 950, letterSpacing: '-0.02em', fontFamily: 'var(--font-heading)' }}>ClustR<span style={{ opacity: 0.4, color: '#fff' }}>AI</span></div>
             <div style={{ display: 'flex', gap: '56px', flexWrap: 'wrap', justifyContent: 'center' }}>
                {['Nexus', 'Security', 'Protocols', 'Architects'].map((link, j) => (
                   <a key={j} href="#" style={{ color: '#71717a', fontSize: '12px', fontWeight: 900, letterSpacing: '0.4em', textTransform: 'uppercase', transition: '0.3s' }} className="hover:text-primary">{link}</a>
                ))}
             </div>
-            <div style={{ color: '#71717a', fontSize: '11px', fontWeight: 950, letterSpacing: '0.4em' }}>© 2026 CLUSTR AI NUCLEUS.</div>
+            <div style={{ color: '#71717a', fontSize: '11px', fontWeight: 950, letterSpacing: '0.4em' }}>© 2026 ClustR AI NUCLEUS.</div>
           </div>
         </footer>
       </main>

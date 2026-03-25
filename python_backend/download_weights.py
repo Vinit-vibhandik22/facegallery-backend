@@ -6,7 +6,7 @@ import numpy as np
 # so they are baked into the image.
 
 def pre_download():
-    print("[FaceGallery] Pre-downloading model weights...")
+    print("[ClustR AI] Pre-downloading model weights...")
     
     # Create a dummy image (black square)
     dummy_img = np.zeros((224, 224, 3), dtype=np.uint8)
@@ -22,9 +22,9 @@ def pre_download():
             detector_backend="mtcnn",
             enforce_detection=False
         )
-        print("[FaceGallery] Successfully pre-downloaded weights for Facenet512 and MTCNN.")
+        print("[ClustR AI] Successfully pre-downloaded weights for Facenet512 and MTCNN.")
     except Exception as e:
-        print(f"[FaceGallery] Warning: Pre-download failed: {e}")
+        print(f"[ClustR AI] Warning: Pre-download failed: {e}")
 
 if __name__ == "__main__":
     pre_download()

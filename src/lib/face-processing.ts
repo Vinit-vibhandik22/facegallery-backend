@@ -24,7 +24,7 @@ export type ProgressCallback = (processed: number, total: number, currentFile: s
  * We don't need to load models in the browser anymore, backend does it.
  */
 export async function loadModels(): Promise<void> {
-    console.log('[FaceGallery] Using Python backend for face detection');
+    console.log('[ClustR AI] Using Python backend for face detection');
 }
 
 /**
@@ -71,9 +71,9 @@ export async function processPhotos(
             const result = await processPhoto(file);
             totalFaces += result.faces.length;
             results.push(result);
-            console.log(`[FaceGallery] ${file.name}: ${result.faces.length} faces found (${result.width}x${result.height})`);
+            console.log(`[ClustR AI] ${file.name}: ${result.faces.length} faces found (${result.width}x${result.height})`);
         } catch (err) {
-            console.error(`[FaceGallery] FAILED to process ${file.name}:`, err);
+            console.error(`[ClustR AI] FAILED to process ${file.name}:`, err);
             results.push({
                 photoFile: file,
                 faces: [],
@@ -83,7 +83,7 @@ export async function processPhotos(
         }
     }
 
-    console.log(`[FaceGallery] Done! Processed ${files.length} photos, found ${totalFaces} total faces`);
+    console.log(`[ClustR AI] Done! Processed ${files.length} photos, found ${totalFaces} total faces`);
     onProgress?.(files.length, files.length, 'Done');
     return results;
 }

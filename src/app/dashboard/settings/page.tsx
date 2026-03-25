@@ -105,7 +105,7 @@ export default function SettingsPage() {
                                 {[
                                     { key: 'allow_downloads', label: 'Allow Downloads', desc: 'Let clients download photos' },
                                     { key: 'allow_social_share', label: 'Social Sharing', desc: 'Show share buttons' },
-                                    { key: 'show_powered_by', label: '"Powered by FaceGallery"', desc: 'Show attribution' },
+                                    { key: 'show_powered_by', label: '"Powered by ClustR AI"', desc: 'Show attribution' },
                                 ].map(opt => (
                                     <div key={opt.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
@@ -143,8 +143,8 @@ export default function SettingsPage() {
                                     ))}
                                 </div>
                                 {form.show_powered_by && (
-                                    <div style={{ textAlign: 'center', padding: 12, fontSize: '0.7rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-color)' }}>
-                                        Powered by FaceGallery
+                                    <div style={{ textAlign: 'center', padding: 12, fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-color)' }}>
+                                        Powered by ClustR AI
                                     </div>
                                 )}
                             </div>

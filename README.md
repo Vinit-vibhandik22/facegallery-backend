@@ -22,12 +22,12 @@
 
 <br/>
 
-> **Upload thousands of event photos. Clustr finds every face then groups them by person, and delivers individual galleries — automatically. Zero false positives.**
+> **Upload thousands of event photos. ClustR AI finds every face, groups them by person, and delivers individual galleries — automatically. Zero false positives.**
 
 <br/>
 
 <!-- Replace with your actual demo GIF -->
-![Clustr Demo](https://via.placeholder.com/900x500/0d1117/3b82f6?text=📸+Add+your+demo+GIF+here)
+![ClustR AI Demo](https://via.placeholder.com/900x500/0d1117/3b82f6?text=📸+Add+your+demo+GIF+here)
 
 </div>
 
@@ -37,7 +37,7 @@
 
 Event photographers shoot thousands of frames per event. Clients want only *their* photos. Manual sorting is hours of soul-crushing work. Basic face-recognition tools hallucinate matches and destroy trust.
 
-Clustr solves this with a **dedicated Python AI backend** running MTCNN + FaceNet512, paired with a **mathematically strict clustering engine** that prioritizes zero false positives over recall — because delivering the wrong photo to a client is never acceptable.
+ClustR AI solves this with a **dedicated Python AI backend** running MTCNN + FaceNet512, paired with a **mathematically strict clustering engine** that prioritizes zero false positives over recall — because delivering the wrong photo to a client is never acceptable.
 
 ---
 
@@ -53,7 +53,7 @@ Clustr solves this with a **dedicated Python AI backend** running MTCNN + FaceNe
 | 🔄 **Re-Sort Engine** | Adjust clustering threshold via sliders without re-uploading — re-runs on existing embeddings |
 | 🔗 **Public Gallery Tokens** | UUID-based expiring share links — guests access their gallery without creating an account |
 | ⚡ **Sequential Processing** | Deliberate one-by-one upload to protect backend RAM/GPU on standard hardware |
-| 🌑 **Aura Glass UI** | Deep charcoal dark theme, glassmorphism, GSAP micro-animations on every state transition |
+| 🌑 **ClustR Glass UI** | Deep charcoal dark theme, glassmorphism, GSAP micro-animations on every state transition |
 
 ---
 
@@ -63,7 +63,7 @@ Clustr solves this with a **dedicated Python AI backend** running MTCNN + FaceNe
 ┌─────────────────────────────────────────────────────────────┐
 │                        FRONTEND                             │
 │           Next.js 16 + React 19 + TypeScript                │
-│         Tailwind CSS • GSAP Animations • Aura Glass UI      │
+│         Tailwind CSS • GSAP Animations • ClustR Glass UI      │
 └───────────────────────────┬─────────────────────────────────┘
                             │ REST API (sequential per-photo)
 ┌───────────────────────────▼─────────────────────────────────┐
@@ -263,7 +263,7 @@ API Docs  →  http://localhost:8000/docs
 
 Built with ☕, FastAPI, and an unreasonable number of face embeddings.
 
-**[⭐ Star this repo](https://github.com/yourusername/clustr)** if Clustr saved you from manual photo sorting hell.
+**[⭐ Star this repo](https://github.com/yourusername/clustr)** if ClustR AI saved you from manual photo sorting hell.
 
 </div>
 

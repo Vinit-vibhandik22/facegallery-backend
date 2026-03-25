@@ -2,7 +2,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Image, Users, Link2, Upload, CheckCircle2, BarChart3, Loader2, Sparkles, Copy, ExternalLink, Tag, RefreshCcw, LayoutGrid, Share2 } from 'lucide-react';
+import { Image, Users, Link2, Upload, CheckCircle2, BarChart3, Sparkles, Copy, ExternalLink, Tag, RefreshCcw, LayoutGrid, Share2 } from 'lucide-react';
+import NeuralNodeLoader from '@/components/ui/NeuralNodeLoader';
 import FaceNexusGraph from '@/components/FaceNexusGraph';
 import { getProject, getPhotos, getClusters, getGalleryLinks, uploadPhoto, updateProject, createCluster, createPhotoClusterMapping, createGalleryLink, updateCluster, updatePhotoFaceCount, deleteAllProjectClusters, mergeClusters } from '@/lib/db';
 import { processPhotos, type PhotoProcessingResult } from '@/lib/face-processing';
@@ -127,7 +128,7 @@ export default function ProjectDetailPage() {
         if (failCount > 0) {
             setUploadError(`${failCount} of ${files.length} uploads failed: ${lastError}`);
         }
-        console.log(`[FaceGallery] Upload complete: ${uploadedPhotos.length} succeeded, ${failCount} failed out of ${files.length} total`);
+        console.log(`[ClustR AI] Upload complete: ${uploadedPhotos.length} succeeded, ${failCount} failed out of ${files.length} total`);
         setUploading(false);
 
         if (uploadedPhotos.length === 0) {
@@ -180,7 +181,7 @@ export default function ProjectDetailPage() {
         const embeddings = allEmbeddings.map(e => e.embedding);
 
         // Log L2 Normalized Euclidean distance between all face pairs
-        console.log(`[FaceGallery] Computing L2 Euclidean distances between ${embeddings.length} faces:`);
+        console.log(`[ClustR AI] Computing L2 Euclidean distances between ${embeddings.length} faces:`);
         for (let i = 0; i < embeddings.length; i++) {
             for (let j = i + 1; j < embeddings.length; j++) {
                 let normA = 0, normB = 0;
@@ -205,7 +206,7 @@ export default function ProjectDetailPage() {
         // High-accuracy Backend Clustering: Average Linkage + Cosine distance (0.35 threshold)
         const { labels, clusterCount } = await clusterFacesRemote(embeddings, 0.35, 1);
         const confidences = computeConfidences(embeddings, labels, clusterCount, 0.35);
-        console.log(`[FaceGallery] Remote Clustering: ${clusterCount} clusters, labels:`, labels);
+        console.log(`[ClustR AI] Remote Clustering: ${clusterCount} clusters, labels:`, labels);
 
         setClusteringStatus(`Found ${clusterCount} face groups. Saving...`);
 
@@ -264,7 +265,7 @@ export default function ProjectDetailPage() {
         setClusteringStatus('Preparing to re-process photos...');
 
         try {
-            console.log(`[FaceGallery] Starting Re-sort for project ${projectId}...`);
+            console.log(`[ClustR AI] Starting Re-sort for project ${projectId}...`);
             await deleteAllProjectClusters(projectId);
             await updateProject(projectId, { status: 'processing', cluster_count: 0 });
             
@@ -273,7 +274,7 @@ export default function ProjectDetailPage() {
                 const p = photos[i] as any;
                 const statusStr = `Fetching asset ${i+1}/${photos.length}: ${p.original_filename}`;
                 setProcessProgress({ current: i + 1, total: photos.length, file: statusStr });
-                console.log(`[FaceGallery] ${statusStr}`);
+                console.log(`[ClustR AI] ${statusStr}`);
                 
                 try {
                     // Use cache: 'no-cache' and mode: 'cors' to handle potential stale CORS headers
@@ -283,7 +284,7 @@ export default function ProjectDetailPage() {
                     const file = new File([blob], p.original_filename, { type: blob.type });
                     photoFiles.push({ file, dbRecord: p });
                 } catch (fetchErr) {
-                    console.error(`[FaceGallery] Failed to fetch ${p.original_filename} from storage:`, fetchErr);
+                    console.error(`[ClustR AI] Failed to fetch ${p.original_filename} from storage:`, fetchErr);
                     // Continue with other photos instead of crashing
                 }
             }
@@ -297,7 +298,7 @@ export default function ProjectDetailPage() {
                 photoFiles.map(u => u.file),
                 (current, total, file) => {
                     setProcessProgress({ current, total, file });
-                    console.log(`[FaceGallery] Processing ${file}: ${current}/${total}`);
+                    console.log(`[ClustR AI] Processing ${file}: ${current}/${total}`);
                 }
             );
 
@@ -334,7 +335,7 @@ export default function ProjectDetailPage() {
 
             const embeddings = allEmbeddings.map(e => e.embedding);
 
-            console.log(`[FaceGallery] Clustering faces via Backend...`);
+            console.log(`[ClustR AI] Clustering faces via Backend...`);
             const { labels, clusterCount } = await clusterFacesRemote(embeddings, 0.35, 1);
             const confidences = computeConfidences(embeddings, labels, clusterCount, 0.35);
 
@@ -445,7 +446,7 @@ export default function ProjectDetailPage() {
     if (loading) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary)' }} />
+                <NeuralNodeLoader size={48} />
             </div>
         );
     }
@@ -663,7 +664,7 @@ export default function ProjectDetailPage() {
                                             <div style={{ borderTop: '1px solid var(--border-color)', padding: '16px', background: 'var(--bg-surface)' }}>
                                                 {isLoadingPhotos ? (
                                                     <div style={{ textAlign: 'center', padding: 20 }}>
-                                                        <Loader2 size={20} style={{ animation: 'spin 1s linear infinite', color: 'var(--color-primary)' }} />
+                                                        <NeuralNodeLoader size={24} />
                                                     </div>
                                                 ) : clPhotos && clPhotos.length > 0 ? (
                                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))', gap: 6 }}>
