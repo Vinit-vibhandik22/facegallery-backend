@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Camera, Users, Link2, BarChart3, Shield, Zap, ArrowRight, CheckCircle2, Sparkles, Globe, Eye, UploadCloud, Cpu, Share2, TrendingUp, Layers, MousePointer2, ChevronRight, Play } from 'lucide-react';
+import { Camera, Users, Link2, BarChart3, Shield, Zap, ArrowRight, CheckCircle2, Sparkles, Globe, Eye, UploadCloud, Cpu, Share2, TrendingUp, Layers, MousePointer2, ChevronRight, Play, Mail, MessageCircle } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ReactLenis } from 'lenis/react';
@@ -286,6 +286,54 @@ export default function LandingPage() {
                   <p style={{ color: '#a1a1aa', fontSize: '1.05rem', lineHeight: 1.7, opacity: 0.7 }}>{f.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+        {/* INVESTMENT & CONTACT SECTION */}
+        <section id="investment" style={{ padding: '160px 40px', background: '#050505', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          {/* Subtle Gilded Glow background */}
+          <div style={{ position: 'absolute', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.05), transparent 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+          
+          <div className="scroll-reveal" style={{ position: 'relative', zIndex: 10 }}>
+            <div className="section-label" style={{ color: '#d4af37', fontWeight: 900, letterSpacing: '0.6em', fontSize: '10px', textTransform: 'uppercase', marginBottom: '32px' }}>EXECUTIVE INVESTMENT</div>
+            <h2 className="animated-gilded-text" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 950, marginBottom: '24px', fontFamily: 'var(--font-heading)' }}>We charge per event.</h2>
+            <p style={{ color: '#a1a1aa', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 64px', fontWeight: 300, opacity: 0.7 }}>
+              Secure industrial-grade neural sorting for your next portfolio. Custom white-labeling and high-flux ingestion included.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '48px' }}>
+              {/* Main Contact Action */}
+              <div onMouseMove={handleMagnetic} onMouseLeave={handleMagneticLeave}>
+                <Link href="/dashboard" style={{ 
+                  background: 'var(--gilded-1)', color: '#000', padding: '24px 72px', 
+                  borderRadius: '2px', fontWeight: 950, fontSize: '1rem', letterSpacing: '0.2em',
+                  boxShadow: '0 15px 50px var(--gilded-shadow)', textDecoration: 'none', display: 'inline-block'
+                }}>
+                  ACQUIRE ACCESS
+                </Link>
+              </div>
+
+              {/* Individual Comms */}
+              <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a href="mailto:vinitvibhandik77@gmail.com" 
+                   style={{ 
+                     display: 'flex', alignItems: 'center', gap: '12px', color: '#f2ca50', 
+                     fontSize: '0.9rem', fontWeight: 900, letterSpacing: '0.15em', textDecoration: 'none', 
+                     padding: '16px 32px', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '2px',
+                     background: 'rgba(212,175,55,0.03)', transition: '0.3s'
+                   }} className="hover:bg-[rgba(212,175,55,0.1)]">
+                  <Mail size={18} /> EMAIL PORTAL
+                </a>
+                <a href="https://wa.me/919226654133" target="_blank" rel="noopener noreferrer"
+                   style={{ 
+                     display: 'flex', alignItems: 'center', gap: '12px', color: '#f2ca50', 
+                     fontSize: '0.9rem', fontWeight: 900, letterSpacing: '0.15em', textDecoration: 'none', 
+                     padding: '16px 32px', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '2px',
+                     background: 'rgba(212,175,55,0.03)', transition: '0.3s'
+                   }} className="hover:bg-[rgba(212,175,55,0.1)]">
+                  <MessageCircle size={18} /> DIRECT WHATSAPP
+                </a>
+              </div>
             </div>
           </div>
         </section>
